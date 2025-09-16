@@ -17,6 +17,9 @@ class PermissionServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__.'/../../config/permission.php' => config_path('permission.php'),
         ], 'config');
+        $this->publishes([
+            __DIR__.'/../../database/migrations' => database_path('migrations'),
+        ], 'migrations');
     }
 
     private function registerMiddleware()
