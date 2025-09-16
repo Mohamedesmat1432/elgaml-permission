@@ -1,11 +1,11 @@
 <?php
+
 namespace Elgaml\Permission\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Elgaml\Permission\Traits\RefreshesPermissionCache;
 use Elgaml\Permission\Contracts\Permission as PermissionContract;
 use Elgaml\Permission\Exceptions\PermissionDoesNotExist;
-use Elgaml\Permission\Helpers\PermissionHelper;
 
 class Permission extends Model implements PermissionContract
 {

@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 use Elgaml\Permission\Traits\RefreshesPermissionCache;
 use Elgaml\Permission\Contracts\Role as RoleContract;
 use Elgaml\Permission\Exceptions\RoleDoesNotExist;
-use Elgaml\Permission\Helpers\PermissionHelper;
 
 class Role extends Model implements RoleContract
 {

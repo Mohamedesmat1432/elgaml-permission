@@ -1,4 +1,5 @@
 <?php
+
 namespace Elgaml\Permission\Traits;
 
 use Elgaml\Permission\PermissionRegistrar;
@@ -14,5 +15,10 @@ trait RefreshesPermissionCache
         static::deleted(function () {
             app(PermissionRegistrar::class)->forgetCachedPermissions();
         });
+    }
+
+    public function forgetCachedPermissions()
+    {
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Elgaml\Permission\Database\Seeders;
+namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Elgaml\Permission\Models\Role;
