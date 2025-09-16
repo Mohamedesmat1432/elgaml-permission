@@ -80,7 +80,7 @@ class SeedPermissionData extends Command
         $createdPermissions = [];
         
         foreach ($permissions as $permission) {
-            $createdPermissions[$permission['name']] = Permission::updateOrCreate([
+            $createdPermissions[$permission['name']] = Permission::firstOrCreate([
                 'name' => $permission['name'],
                 'guard_name' => 'web',
                 'description' => $permission['description'],
@@ -150,7 +150,7 @@ class SeedPermissionData extends Command
         $createdRoles = [];
         
         foreach ($roles as $role) {
-            $roleModel = Role::updateOrCreate([
+            $roleModel = Role::firstOrCreate([
                 'name' => $role['name'],
                 'guard_name' => 'web',
                 'description' => $role['description'],
@@ -213,7 +213,7 @@ class SeedPermissionData extends Command
         $createdUsers = [];
         
         foreach ($users as $userData) {
-            $user = User::updateOrCreate([
+            $user = User::firstOrCreate([
                 'name' => $userData['name'],
                 'email' => $userData['email'],
                 'password' => $userData['password'],
