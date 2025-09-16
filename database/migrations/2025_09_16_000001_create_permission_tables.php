@@ -1,9 +1,10 @@
 <?php
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePermissionTables extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -37,4 +38,16 @@ class CreatePermissionTables extends Migration
             $table->primary(['role_id', 'permission_id']);
         });
     }
-}
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('roles');
+        Schema::dropIfExists('permissions');
+        Schema::dropIfExists('user_has_roles');
+        Schema::dropIfExists('user_has_permissions');
+        Schema::dropIfExists('role_has_permissions');
+    }
+};
