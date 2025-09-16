@@ -1,17 +1,16 @@
 <?php
 
-namespace Database\Seeders;
+namespace Elgaml\Permission\Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Elgaml\Permission\Models\Role;
 use Elgaml\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
 use App\Models\User; // Assuming your User model is in App\Models
 
-class PermissionSeeder extends Seeder
+class ElgamlPermissionSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
         // Clear existing data
         $this->clearData();

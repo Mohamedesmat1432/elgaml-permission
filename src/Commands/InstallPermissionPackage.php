@@ -23,13 +23,7 @@ class InstallPermissionPackage extends Command
         $migrationPath = database_path('migrations/2025_09_16_000002_create_permission_table.php');
         File::copy(__DIR__.'/../../database/migrations/2025_09_16_000001_create_permission_table.php', $migrationPath);
         
-        // Publish seeder
-        $this->call('vendor:publish', [
-            '--provider' => "Elgaml\Permission\Providers\PermissionServiceProvider",
-            '--tag' => 'seeders'
-        ]);
-        
-        $this->info('Migration and seeder created successfully!');
+        $this->info('Migration && config published successfully!');
         $this->info('Please run:');
         $this->info('1. php artisan migrate');
         $this->info('2. php artisan permission:seed');
