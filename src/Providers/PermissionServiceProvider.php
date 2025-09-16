@@ -55,7 +55,7 @@ class PermissionServiceProvider extends ServiceProvider
         ], 'config');
 
         $this->publishes([
-            __DIR__.'/../../database/migrations/create_permission_tables.php' => 
+            __DIR__.'/../../database/migrations/2025_09_16_000001_create_permission_table.php' => 
             database_path('migrations/'.date('Y_m_d_His', time()).'_create_elgaml_permission_tables.php'),
         ], 'migrations');
 
