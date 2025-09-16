@@ -1,4 +1,5 @@
 <?php
+
 namespace Elgaml\Permission\Database\Seeders;
 
 use Illuminate\Database\Seeder;
