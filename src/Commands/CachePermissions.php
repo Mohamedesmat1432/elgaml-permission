@@ -12,6 +12,7 @@ class CachePermissions extends Command
     public function handle(PermissionRegistrar $registrar)
     {
         $registrar->getPermissions();
-        $this->info('Permissions cached successfully!');
+        $registrar->getRoles();
+        $this->info('Permissions and roles cached successfully!');
     }
 }

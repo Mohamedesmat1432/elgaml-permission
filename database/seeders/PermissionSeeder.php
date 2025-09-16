@@ -1,5 +1,4 @@
 <?php
-
 namespace Elgaml\Permission\Database\Seeders;
 
 use Illuminate\Database\Seeder;
@@ -35,43 +34,45 @@ class PermissionSeeder extends Seeder
         \DB::table('role_has_permissions')->delete();
         
         // Clear user roles and permissions
-        \DB::table('user_has_roles')->delete();
-        \DB::table('user_has_permissions')->delete();
+        \DB::table('model_has_roles')->delete();
+        \DB::table('model_has_permissions')->delete();
         
         // Clear roles and permissions
         Role::query()->delete();
         Permission::query()->delete();
-        
-        // Clear users (optional - be careful in production)
-        // User::query()->delete();
     }
     
     private function createPermissions()
     {
         $permissions = [
             // User permissions
-            'view users',
-            'create users',
-            'edit users',
-            'delete users',
+            ['name' => 'view users', 'description' => 'View users', 'group' => 'user'],
+            ['name' => 'create users', 'description' => 'Create users', 'group' => 'user'],
+            ['name' => 'edit users', 'description' => 'Edit users', 'group' => 'user'],
+            ['name' => 'delete users', 'description' => 'Delete users', 'group' => 'user'],
             
             // Article permissions
-            'view articles',
-            'create articles',
-            'edit articles',
-            'delete articles',
-            'publish articles',
+            ['name' => 'view articles', 'description' => 'View articles', 'group' => 'article'],
+            ['name' => 'create articles', 'description' => 'Create articles', 'group' => 'article'],
+            ['name' => 'edit articles', 'description' => 'Edit articles', 'group' => 'article'],
+            ['name' => 'delete articles', 'description' => 'Delete articles', 'group' => 'article'],
+            ['name' => 'publish articles', 'description' => 'Publish articles', 'group' => 'article'],
             
             // System permissions
-            'manage system',
-            'view reports',
-            'export data',
+            ['name' => 'manage system', 'description' => 'Manage system', 'group' => 'system'],
+            ['name' => 'view reports', 'description' => 'View reports', 'group' => 'system'],
+            ['name' => 'export data', 'description' => 'Export data', 'group' => 'system'],
         ];
         
         $createdPermissions = [];
         
         foreach ($permissions as $permission) {
-            $createdPermissions[$permission] = Permission::create(['name' => $permission]);
+            $createdPermissions[$permission['name']] = Permission::create([
+                'name' => $permission['name'],
+                'guard_name' => 'web',
+                'description' => $permission['description'],
+                'group' => $permission['group'],
+            ]);
         }
         
         $this->command->info('Created ' . count($permissions) . ' permissions');
@@ -82,48 +83,73 @@ class PermissionSeeder extends Seeder
     private function createRoles($permissions)
     {
         $roles = [
-            'admin' => [
-                'view users',
-                'create users',
-                'edit users',
-                'delete users',
-                'view articles',
-                'create articles',
-                'edit articles',
-                'delete articles',
-                'publish articles',
-                'manage system',
-                'view reports',
-                'export data',
+            [
+                'name' => 'admin',
+                'description' => 'Administrator',
+                'level' => 100,
+                'permissions' => [
+                    'view users',
+                    'create users',
+                    'edit users',
+                    'delete users',
+                    'view articles',
+                    'create articles',
+                    'edit articles',
+                    'delete articles',
+                    'publish articles',
+                    'manage system',
+                    'view reports',
+                    'export data',
+                ],
             ],
-            'editor' => [
-                'view articles',
-                'create articles',
-                'edit articles',
-                'publish articles',
+            [
+                'name' => 'editor',
+                'description' => 'Editor',
+                'level' => 50,
+                'permissions' => [
+                    'view articles',
+                    'create articles',
+                    'edit articles',
+                    'publish articles',
+                ],
             ],
-            'author' => [
-                'view articles',
-                'create articles',
-                'edit articles',
+            [
+                'name' => 'author',
+                'description' => 'Author',
+                'level' => 30,
+                'permissions' => [
+                    'view articles',
+                    'create articles',
+                    'edit articles',
+                ],
             ],
-            'viewer' => [
-                'view articles',
-                'view reports',
+            [
+                'name' => 'viewer',
+                'description' => 'Viewer',
+                'level' => 10,
+                'permissions' => [
+                    'view articles',
+                    'view reports',
+                ],
             ],
         ];
         
         $createdRoles = [];
         
-        foreach ($roles as $roleName => $rolePermissions) {
-            $role = Role::create(['name' => $roleName]);
+        foreach ($roles as $role) {
+            $roleModel = Role::create([
+                'name' => $role['name'],
+                'guard_name' => 'web',
+                'description' => $role['description'],
+                'level' => $role['level'],
+            ]);
             
             // Assign permissions to role
-            foreach ($rolePermissions as $permissionName) {
-                $role->givePermissionTo($permissions[$permissionName]);
+            foreach ($role['permissions'] as $permissionName) {
+                $roleModel->givePermissionTo($permissions[$permissionName]);
             }
             
-            $createdRoles[$roleName] = $role;
+            $createdRoles[$role['name']] = $roleModel;
         }
         
         $this->command->info('Created ' . count($roles) . ' roles');

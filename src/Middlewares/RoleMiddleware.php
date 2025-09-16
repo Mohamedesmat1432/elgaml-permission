@@ -6,10 +6,18 @@ use Elgaml\Permission\Exceptions\UnauthorizedException;
 
 class RoleMiddleware
 {
-    public function handle($request, Closure $next, $role)
+    public function handle($request, Closure $next, $role, $guard = null)
     {
-        if (!auth()->user()->hasRole($role)) {
-            throw new UnauthorizedException(403, 'User does not have the right role.');
+        $authGuard = app('auth')->guard($guard);
+        
+        if (!$authGuard->check()) {
+            throw UnauthorizedException::notLoggedIn();
+        }
+
+        $roles = is_array($role) ? $role : explode('|', $role);
+
+        if (!$authGuard->user()->hasAnyRole($roles)) {
+            throw UnauthorizedException::forRoles($roles);
         }
 
         return $next($request);

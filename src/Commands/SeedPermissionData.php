@@ -1,5 +1,4 @@
 <?php
-
 namespace Elgaml\Permission\Commands;
 
 use Illuminate\Console\Command;
