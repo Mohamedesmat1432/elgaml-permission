@@ -5,7 +5,8 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "Elgaml\\Permission\\": "src/"
+            "Elgaml\\Permission\\": "src/",
+            "Elgaml\\Permission\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "extra": {
