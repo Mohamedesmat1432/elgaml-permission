@@ -15,7 +15,7 @@ class SeedPermissionData extends Command
         
         // Run the seeder
         Artisan::call('db:seed', [
-            '--class' => 'Elgaml\\\\Permission\\\\Database\\\\Seeders\\\\ElgamlPermissionSeeder'
+            '--class' => 'Database\\Seeders\\PermissionSeeder'
         ]);
         
         $this->info(Artisan::output());
