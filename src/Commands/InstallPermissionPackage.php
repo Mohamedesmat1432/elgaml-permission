@@ -20,8 +20,8 @@ class InstallPermissionPackage extends Command
         ]);
         
         // Create migration file
-        $migrationPath = database_path('migrations/'.date('Y_m_d_His', time()).'_create_elgaml_permission_tables.php');
-        File::copy(__DIR__.'/../../database/migrations/create_permission_tables.php', $migrationPath);
+        $migrationPath = database_path('migrations/2025_09_16_000002_create_permission_table.php');
+        File::copy(__DIR__.'/../../database/migrations/2025_09_16_000001_create_permission_table.php', $migrationPath);
         
         // Publish seeder
         $this->call('vendor:publish', [
