@@ -1,4 +1,5 @@
 <?php
+
 namespace Elgaml\Permission\Providers;
 
 use Elgaml\Permission\PermissionRegistrar;
@@ -12,14 +13,16 @@ class PermissionServiceProvider extends ServiceProvider
         $this->registerMiddleware();
         $this->registerCommands();
         $this->registerBladeDirectives();
-        $this->loadMigrationsFrom(__DIR__.'/../../database/migrations');
-        $this->mergeConfigFrom(__DIR__.'/../../config/permission.php', 'permission');
-        $this->publishes([
-            __DIR__.'/../../config/permission.php' => config_path('permission.php'),
-        ], 'config');
-        $this->publishes([
-            __DIR__.'/../../database/migrations' => database_path('migrations'),
-        ], 'migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
+        $this->mergeConfigFrom(__DIR__ . '/../../config/permission.php', 'permission');
+        $this->registerPublishing();
+    }
+
+    private function registerPublishing()
+    {
+        $this->publishes([__DIR__ . '/../../config/permission.php' => config_path('permission.php')], 'config');
+        $this->publishes([__DIR__ . '/../../database/migrations' => database_path('migrations')], 'migrations');
+        $this->publishes([__DIR__ . '/../../database/seeders/PermissionSeeder.php' => database_path('seeders/PermissionSeeder.php')], 'seeders');
     }
 
     private function registerMiddleware()
@@ -35,6 +38,7 @@ class PermissionServiceProvider extends ServiceProvider
             $this->commands([
                 \Elgaml\Permission\Commands\CachePermissions::class,
                 \Elgaml\Permission\Commands\ClearPermissionsCache::class,
+                \Elgaml\Permission\Commands\SeedPermissionData::class,
             ]);
         }
     }
