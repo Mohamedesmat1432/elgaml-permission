@@ -2,14 +2,16 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Elgaml\Permission\Models\Role;
 use Elgaml\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
 use App\Models\User; // Assuming your User model is in App\Models
 
 class PermissionSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         // Clear existing data
         $this->clearData();
@@ -32,11 +34,11 @@ class PermissionSeeder extends Seeder
     private function clearData()
     {
         // Clear role permissions
-        \DB::table('role_has_permissions')->delete();
+        DB::table('role_has_permissions')->delete();
         
         // Clear user roles and permissions
-        \DB::table('model_has_roles')->delete();
-        \DB::table('model_has_permissions')->delete();
+        DB::table('model_has_roles')->delete();
+        DB::table('model_has_permissions')->delete();
         
         // Clear roles and permissions
         Role::query()->delete();
