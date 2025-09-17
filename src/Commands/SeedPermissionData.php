@@ -44,15 +44,19 @@ class SeedPermissionData extends Command
     private function clearData()
     {
         // Clear role permissions
-        \DB::table('role_has_permissions')->delete();
+        DB::table('role_has_permissions')->delete();
         
         // Clear user roles and permissions
-        \DB::table('model_has_roles')->delete();
-        \DB::table('model_has_permissions')->delete();
+        DB::table('model_has_roles')->delete();
+        DB::table('model_has_permissions')->delete();
         
         // Clear roles and permissions
         Role::query()->delete();
         Permission::query()->delete();
+        
+        // Note: We're not clearing users to avoid the unique constraint violation
+        // If you want to clear users, uncomment the line below
+        // User::query()->delete();
     }
     
     private function createPermissions()
@@ -82,7 +86,8 @@ class SeedPermissionData extends Command
         foreach ($permissions as $permission) {
             $createdPermissions[$permission['name']] = Permission::firstOrCreate([
                 'name' => $permission['name'],
-                'guard_name' => 'web',
+                'guard_name' => 'web'
+            ], [
                 'description' => $permission['description'],
                 'group' => $permission['group'],
             ]);
@@ -152,15 +157,18 @@ class SeedPermissionData extends Command
         foreach ($roles as $role) {
             $roleModel = Role::firstOrCreate([
                 'name' => $role['name'],
-                'guard_name' => 'web',
+                'guard_name' => 'web'
+            ], [
                 'description' => $role['description'],
                 'level' => $role['level'],
             ]);
             
-            // Assign permissions to role
+            // Sync permissions to role
+            $rolePermissions = [];
             foreach ($role['permissions'] as $permissionName) {
-                $roleModel->givePermissionTo($permissions[$permissionName]);
+                $rolePermissions[] = $permissions[$permissionName]->id;
             }
+            $roleModel->permissions()->sync($rolePermissions);
             
             $createdRoles[$role['name']] = $roleModel;
         }
@@ -213,26 +221,42 @@ class SeedPermissionData extends Command
         $createdUsers = [];
         
         foreach ($users as $userData) {
-            $user = User::firstOrCreate([
-                'name' => $userData['name'],
-                'email' => $userData['email'],
-                'password' => $userData['password'],
-            ]);
+            // Check if user already exists
+            $user = User::where('email', $userData['email'])->first();
+            
+            if (!$user) {
+                // Create new user if not exists
+                $user = User::create([
+                    'name' => $userData['name'],
+                    'email' => $userData['email'],
+                    'password' => $userData['password'],
+                ]);
+                $this->info("Created user: {$userData['email']}");
+            } else {
+                // Update existing user's password if needed
+                $user->password = $userData['password'];
+                $user->save();
+                $this->info("Updated user: {$userData['email']}");
+            }
             
             // Assign roles
+            $roleIds = [];
             foreach ($userData['roles'] as $roleName) {
-                $user->assignRole($roles[$roleName]);
+                $roleIds[] = $roles[$roleName]->id;
             }
+            $user->roles()->sync($roleIds);
             
             // Assign direct permissions
+            $permissionIds = [];
             foreach ($userData['permissions'] as $permissionName) {
-                $user->givePermissionTo($permissions[$permissionName]);
+                $permissionIds[] = $permissions[$permissionName]->id;
             }
+            $user->permissions()->sync($permissionIds);
             
             $createdUsers[$userData['email']] = $user;
         }
         
-        $this->info('Created ' . count($users) . ' users');
+        $this->info('Processed ' . count($users) . ' users');
         
         return $createdUsers;
     }
